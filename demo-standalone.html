@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeRAG - Upload & Eligibility Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .upload-area {
+            border: 2px dashed #cbd5e0;
+            transition: border-color 0.3s ease;
+        }
+        .upload-area:hover {
+            border-color: #667eea;
+        }
+        .upload-area.dragover {
+            border-color: #667eea;
+            background-color: #f7fafc;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-file-alt text-white text-2xl mr-2"></i>
+                        <h1 class="text-white text-xl font-bold">ResumeRAG - Upload & Eligibility Demo</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-white text-sm">📁 Upload Resume & Check Eligibility</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        
+        <!-- Upload Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="text-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">📁 Upload Your Resume</h2>
+                <p class="text-gray-600">Upload your resume file to check eligibility against job requirements</p>
+            </div>
+
+            <!-- File Upload Area -->
+            <div class="upload-area rounded-lg p-8 text-center cursor-pointer" id="upload-area" onclick="document.getElementById('file-input').click()">
+                <div class="space-y-4">
+                    <i class="fas fa-cloud-upload-alt text-6xl text-indigo-400"></i>
+                    <div>
+                        <h3 class="text-xl font-medium text-gray-900 mb-2">Click Here to Upload Resume</h3>
+                        <p class="text-gray-600 mb-4">or drag and drop your file here</p>
+                        <input type="file" id="file-input" accept=".pdf,.txt,.doc,.docx" class="hidden">
+                        <div class="bg-indigo-600 text-white px-8 py-3 rounded-md inline-block hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-upload mr-2"></i>Choose Resume File
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500">Supported formats: PDF, DOC, DOCX, TXT (max 10MB)</p>
+                </div>
+            </div>
+
+            <!-- Upload Instructions -->
+            <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="flex items-start">
+                    <i class="fas fa-info-circle text-blue-600 mr-3 mt-1"></i>
+                    <div>
+                        <h4 class="font-medium text-blue-800 mb-1">How to Upload:</h4>
+                        <ul class="text-sm text-blue-700 space-y-1">
+                            <li>• Click the upload area above or the "Choose Resume File" button</li>
+                            <li>• Select your resume file from your computer</li>
+                            <li>• Supported formats: PDF, DOC, DOCX, TXT</li>
+                            <li>• Maximum file size: 10MB</li>
+                            <li>• Once uploaded, you'll see the file details below</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selected File Display -->
+            <div id="file-selected" class="hidden mt-6 p-6 bg-green-50 border border-green-200 rounded-lg">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-4">
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-file-alt text-green-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-green-800 text-lg" id="file-name">Selected File</h4>
+                            <p class="text-sm text-green-600 mb-2" id="file-size">File size</p>
+                            <p class="text-sm text-green-600" id="file-type">File type</p>
+                            <div class="mt-3">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <i class="fas fa-check mr-1"></i>Ready for Eligibility Check
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="removeFile()" class="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-50 transition-colors">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Eligibility Criteria Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h3 class="text-xl font-semibold text-gray-900 mb-6">Set Eligibility Criteria</h3>
+            
+            <!-- Quick Templates -->
+            <div class="mb-6">
+                <h4 class="font-medium text-gray-800 mb-3">Quick Templates</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <button onclick="applyTemplate('web-developer')" class="p-3 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors text-left">
+                        <h5 class="font-medium text-gray-900">Web Developer</h5>
+                        <p class="text-sm text-gray-600">JavaScript, React, Node.js</p>
+                        <p class="text-xs text-gray-500">3+ years experience</p>
+                    </button>
+                    <button onclick="applyTemplate('data-scientist')" class="p-3 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors text-left">
+                        <h5 class="font-medium text-gray-900">Data Scientist</h5>
+                        <p class="text-sm text-gray-600">Python, Machine Learning, SQL</p>
+                        <p class="text-xs text-gray-500">5+ years experience</p>
+                    </button>
+                    <button onclick="applyTemplate('devops-engineer')" class="p-3 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors text-left">
+                        <h5 class="font-medium text-gray-900">DevOps Engineer</h5>
+                        <p class="text-sm text-gray-600">AWS, Docker, Kubernetes</p>
+                        <p class="text-xs text-gray-500">4+ years experience</p>
+                    </button>
+                    <button onclick="applyTemplate('product-manager')" class="p-3 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors text-left">
+                        <h5 class="font-medium text-gray-900">Product Manager</h5>
+                        <p class="text-sm text-gray-600">Agile, Scrum, Strategy</p>
+                        <p class="text-xs text-gray-500">5+ years experience</p>
+                    </button>
+                    <button onclick="applyTemplate('ui-ux-designer')" class="p-3 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors text-left">
+                        <h5 class="font-medium text-gray-900">UI/UX Designer</h5>
+                        <p class="text-sm text-gray-600">Figma, Adobe, Research</p>
+                        <p class="text-xs text-gray-500">3+ years experience</p>
+                    </button>
+                    <button onclick="applyTemplate('mobile-developer')" class="p-3 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors text-left">
+                        <h5 class="font-medium text-gray-900">Mobile Developer</h5>
+                        <p class="text-sm text-gray-600">React Native, Swift, Kotlin</p>
+                        <p class="text-xs text-gray-500">4+ years experience</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Criteria Inputs -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Required Skills (comma-separated)</label>
+                    <input type="text" id="required-skills" placeholder="JavaScript, React, Node.js, Python" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Minimum Experience (years)</label>
+                    <input type="number" id="min-experience" placeholder="3" min="0" max="20"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Required Education Level</label>
+                    <select id="required-education" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="">Any</option>
+                        <option value="high-school">High School</option>
+                        <option value="associate">Associate Degree</option>
+                        <option value="bachelor">Bachelor's Degree</option>
+                        <option value="master">Master's Degree</option>
+                        <option value="phd">PhD</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Required Certifications</label>
+                    <input type="text" id="required-certifications" placeholder="AWS, PMP, Scrum Master" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </div>
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Additional Requirements</label>
+                <textarea id="additional-requirements" rows="3" placeholder="Any specific requirements, preferences, or criteria..." 
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+            </div>
+
+            <!-- Check Eligibility Button -->
+            <div class="mt-6 text-center">
+                <button onclick="checkEligibility()" id="check-button" 
+                        class="bg-indigo-600 text-white px-8 py-3 rounded-md hover:bg-indigo-700 transition-colors text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled>
+                    <i class="fas fa-check-circle mr-2"></i>Check Eligibility
+                </button>
+                <div id="upload-status" class="mt-3 text-sm text-gray-500">
+                    <i class="fas fa-info-circle mr-1"></i>Please upload a resume file first
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="hidden">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-semibold text-gray-900 mb-6">Eligibility Check Results</h3>
+                <div id="results-content">
+                    <!-- Results will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo Information -->
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow-md p-6 text-white mt-8">
+            <h3 class="text-xl font-semibold mb-4 text-center">
+                <i class="fas fa-info-circle mr-2"></i>Demo Information
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                <div>
+                    <i class="fas fa-upload text-3xl mb-2"></i>
+                    <h4 class="font-semibold">Upload Resume</h4>
+                    <p class="text-sm opacity-90">PDF, DOC, TXT, DOCX files</p>
+                </div>
+                <div>
+                    <i class="fas fa-list-check text-3xl mb-2"></i>
+                    <h4 class="font-semibold">Set Criteria</h4>
+                    <p class="text-sm opacity-90">Skills, experience, education</p>
+                </div>
+                <div>
+                    <i class="fas fa-chart-line text-3xl mb-2"></i>
+                    <h4 class="font-semibold">Get Results</h4>
+                    <p class="text-sm opacity-90">Eligibility score & analysis</p>
+                </div>
+            </div>
+            <div class="mt-4 text-center">
+                <p class="text-sm opacity-90">
+                    This is a demo version. In the full system, resumes are processed with AI for semantic analysis.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let selectedFile = null;
+
+        // File upload handling
+        const fileInput = document.getElementById('file-input');
+        const uploadArea = document.getElementById('upload-area');
+        const fileSelected = document.getElementById('file-selected');
+        const checkButton = document.getElementById('check-button');
+
+        fileInput.addEventListener('change', handleFileSelect);
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        function handleFile(file) {
+            // Check file type
+            const allowedTypes = ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Please select a valid file type (PDF, TXT, DOC, DOCX)');
+                return;
+            }
+
+            // Check file size (10MB limit)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File size must be less than 10MB');
+                return;
+            }
+
+            selectedFile = file;
+            document.getElementById('file-name').textContent = file.name;
+            document.getElementById('file-size').textContent = formatFileSize(file.size);
+            document.getElementById('file-type').textContent = getFileTypeDescription(file.type);
+            fileSelected.classList.remove('hidden');
+            checkButton.disabled = false;
+            
+            // Update upload status
+            document.getElementById('upload-status').innerHTML = `
+                <i class="fas fa-check-circle text-green-500 mr-1"></i>Resume uploaded successfully! Ready to check eligibility.
+            `;
+        }
+
+        function removeFile() {
+            selectedFile = null;
+            fileInput.value = '';
+            fileSelected.classList.add('hidden');
+            checkButton.disabled = true;
+            
+            // Reset upload status
+            document.getElementById('upload-status').innerHTML = `
+                <i class="fas fa-info-circle mr-1"></i>Please upload a resume file first
+            `;
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function getFileTypeDescription(mimeType) {
+            const types = {
+                'application/pdf': 'PDF Document',
+                'text/plain': 'Text File',
+                'application/msword': 'Microsoft Word Document',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'Microsoft Word Document (DOCX)'
+            };
+            return types[mimeType] || 'Unknown File Type';
+        }
+
+        // Template functions
+        function applyTemplate(templateType) {
+            const templates = {
+                'web-developer': {
+                    skills: 'JavaScript, React, Node.js, HTML, CSS, TypeScript',
+                    experience: 3,
+                    education: 'bachelor',
+                    certifications: '',
+                    additional: 'Experience with modern web development frameworks and tools'
+                },
+                'data-scientist': {
+                    skills: 'Python, Machine Learning, SQL, Statistics, Data Analysis',
+                    experience: 5,
+                    education: 'master',
+                    certifications: 'AWS, Machine Learning Certification',
+                    additional: 'Experience with data visualization and statistical modeling'
+                },
+                'devops-engineer': {
+                    skills: 'AWS, Docker, Kubernetes, CI/CD, Linux, Terraform',
+                    experience: 4,
+                    education: 'bachelor',
+                    certifications: 'AWS Certified Solutions Architect, Kubernetes Certification',
+                    additional: 'Experience with cloud infrastructure and automation'
+                },
+                'product-manager': {
+                    skills: 'Agile, Scrum, Product Strategy, User Research, Analytics',
+                    experience: 5,
+                    education: 'bachelor',
+                    certifications: 'PMP, Scrum Master, Product Owner',
+                    additional: 'Experience with product lifecycle management and stakeholder communication'
+                },
+                'ui-ux-designer': {
+                    skills: 'Figma, Adobe Creative Suite, User Research, Prototyping, Wireframing',
+                    experience: 3,
+                    education: 'bachelor',
+                    certifications: 'UX Certification, Adobe Certified Expert',
+                    additional: 'Experience with design systems and user-centered design principles'
+                },
+                'mobile-developer': {
+                    skills: 'React Native, Swift, Kotlin, Flutter, iOS, Android',
+                    experience: 4,
+                    education: 'bachelor',
+                    certifications: 'iOS Developer, Android Developer',
+                    additional: 'Experience with mobile app development and cross-platform solutions'
+                }
+            };
+
+            const template = templates[templateType];
+            if (template) {
+                document.getElementById('required-skills').value = template.skills;
+                document.getElementById('min-experience').value = template.experience;
+                document.getElementById('required-education').value = template.education;
+                document.getElementById('required-certifications').value = template.certifications;
+                document.getElementById('additional-requirements').value = template.additional;
+            }
+        }
+
+        // Eligibility check function
+        function checkEligibility() {
+            if (!selectedFile) {
+                alert('Please select a resume file first');
+                return;
+            }
+
+            // Get criteria
+            const requiredSkills = document.getElementById('required-skills').value
+                .split(',').map(s => s.trim()).filter(s => s);
+            const minExperience = parseInt(document.getElementById('min-experience').value) || 0;
+            const requiredEducation = document.getElementById('required-education').value;
+            const requiredCertifications = document.getElementById('required-certifications').value
+                .split(',').map(s => s.trim()).filter(s => s);
+            const additionalRequirements = document.getElementById('additional-requirements').value;
+
+            // Simulate eligibility check (demo version)
+            const results = simulateEligibilityCheck({
+                fileName: selectedFile.name,
+                requiredSkills,
+                minExperience,
+                requiredEducation,
+                requiredCertifications,
+                additionalRequirements
+            });
+
+            displayResults(results);
+        }
+
+        function simulateEligibilityCheck(criteria) {
+            // Demo simulation - in real system, this would process the actual resume
+            const fileName = criteria.fileName;
+            const requiredSkills = criteria.requiredSkills;
+            const minExperience = criteria.minExperience;
+            
+            // Simulate candidate data based on file name
+            const candidateName = fileName.replace(/[._-]/g, ' ').replace(/\.[^/.]+$/, '');
+            const simulatedSkills = ['JavaScript', 'React', 'Node.js', 'Python', 'SQL', 'Git', 'AWS'];
+            const simulatedExperience = Math.floor(Math.random() * 8) + 1;
+            const simulatedEducation = ['bachelor', 'master', 'phd'][Math.floor(Math.random() * 3)];
+
+            // Calculate matches
+            const matchedSkills = requiredSkills.filter(skill => 
+                simulatedSkills.some(simSkill => 
+                    simSkill.toLowerCase().includes(skill.toLowerCase()) || 
+                    skill.toLowerCase().includes(simSkill.toLowerCase())
+                )
+            );
+
+            const skillsScore = requiredSkills.length > 0 ? 
+                Math.round((matchedSkills.length / requiredSkills.length) * 100) : 100;
+            const experienceScore = minExperience > 0 ? 
+                (simulatedExperience >= minExperience ? 100 : Math.round((simulatedExperience / minExperience) * 100)) : 100;
+            const educationScore = criteria.requiredEducation ? 
+                (simulatedEducation === criteria.requiredEducation ? 100 : 50) : 100;
+
+            const overallScore = Math.round((skillsScore + experienceScore + educationScore) / 3);
+            const isEligible = overallScore >= 70;
+
+            return {
+                candidateName: candidateName,
+                overallScore: overallScore,
+                isEligible: isEligible,
+                criteria: {
+                    skills: {
+                        status: skillsScore >= 70 ? 'pass' : skillsScore >= 40 ? 'partial' : 'fail',
+                        score: skillsScore,
+                        matched: matchedSkills,
+                        missing: requiredSkills.filter(skill => !matchedSkills.includes(skill))
+                    },
+                    experience: {
+                        status: experienceScore >= 100 ? 'pass' : 'fail',
+                        score: experienceScore,
+                        candidate: simulatedExperience,
+                        required: minExperience
+                    },
+                    education: {
+                        status: educationScore >= 100 ? 'pass' : 'fail',
+                        score: educationScore,
+                        candidate: simulatedEducation,
+                        required: criteria.requiredEducation || 'Any'
+                    }
+                },
+                missingRequirements: [],
+                recommendations: []
+            };
+        }
+
+        function displayResults(results) {
+            const resultsSection = document.getElementById('results-section');
+            const resultsContent = document.getElementById('results-content');
+
+            const statusColor = results.isEligible ? 'green' : 'red';
+            const statusIcon = results.isEligible ? 'check-circle' : 'times-circle';
+
+            resultsContent.innerHTML = `
+                <div class="mb-6">
+                    <div class="bg-${statusColor}-50 border border-${statusColor}-200 rounded-lg p-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-${statusIcon} text-${statusColor}-600 mr-3 text-2xl"></i>
+                            <div>
+                                <h4 class="text-lg font-semibold text-${statusColor}-800">
+                                    ${results.isEligible ? 'Eligible' : 'Not Eligible'}
+                                </h4>
+                                <p class="text-${statusColor}-700">
+                                    Overall Score: ${results.overallScore}% - ${results.candidateName}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    ${Object.entries(results.criteria).map(([key, criterion]) => {
+                        const statusColor = criterion.status === 'pass' ? 'green' : 
+                                          criterion.status === 'partial' ? 'yellow' : 'red';
+                        const statusIcon = criterion.status === 'pass' ? 'check' : 
+                                          criterion.status === 'partial' ? 'exclamation' : 'times';
+                        
+                        return `
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h5 class="font-medium text-gray-800 capitalize">${key}</h5>
+                                    <span class="text-${statusColor}-600">
+                                        <i class="fas fa-${statusIcon} mr-1"></i>
+                                        ${criterion.score}%
+                                    </span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-${statusColor}-500 h-2 rounded-full" style="width: ${criterion.score}%"></div>
+                                </div>
+                                <div class="mt-2 text-sm">
+                                    ${criterion.matched ? `<p class="text-green-600">✓ ${criterion.matched.length} matched</p>` : ''}
+                                    ${criterion.missing ? `<p class="text-red-600">✗ ${criterion.missing.length} missing</p>` : ''}
+                                    ${criterion.candidate ? `<p class="text-blue-600">Candidate: ${criterion.candidate}</p>` : ''}
+                                    ${criterion.required ? `<p class="text-gray-600">Required: ${criterion.required}</p>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+                
+                <div class="text-center">
+                    <button onclick="document.getElementById('results-section').classList.add('hidden')" 
+                            class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors">
+                        Close Results
+                    </button>
+                </div>
+            `;
+
+            resultsSection.classList.remove('hidden');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

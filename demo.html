@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeRAG - Hackathon Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .demo-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .demo-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tech-badge {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-file-alt text-white text-2xl mr-2"></i>
+                        <h1 class="text-white text-xl font-bold">ResumeRAG - Hackathon Demo</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-white text-sm">🧠 AI-Powered Resume Search & Job Matching</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl font-bold text-white mb-4">ResumeRAG System</h1>
+            <p class="text-xl text-gray-200 mb-8">Revolutionary AI-powered resume search and job matching platform</p>
+            <div class="flex justify-center space-x-4">
+                <button onclick="showDemo('upload')" class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-upload mr-2"></i>Upload Demo
+                </button>
+                <button onclick="showDemo('search')" class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-search mr-2"></i>Search Demo
+                </button>
+                <button onclick="showDemo('matching')" class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-briefcase mr-2"></i>Job Matching
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        
+        <!-- Upload Demo -->
+        <div id="upload-demo" class="demo-section">
+            <div class="fade-in">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">📁 Resume Upload & Processing</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white rounded-lg shadow-md p-6 demo-card">
+                        <h3 class="text-xl font-semibold mb-4 text-indigo-600">
+                            <i class="fas fa-file-upload mr-2"></i>Multi-Format Support
+                        </h3>
+                        <ul class="space-y-2 text-gray-700">
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>PDF documents</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Word documents (.doc, .docx)</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Text files (.txt)</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>ZIP bulk uploads</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-6 demo-card">
+                        <h3 class="text-xl font-semibold mb-4 text-indigo-600">
+                            <i class="fas fa-cogs mr-2"></i>AI Processing Pipeline
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-blue-600 text-sm font-bold">1</span>
+                                </div>
+                                <span class="text-gray-700">Parse & Extract Text</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-blue-600 text-sm font-bold">2</span>
+                                </div>
+                                <span class="text-gray-700">Generate Embeddings</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-blue-600 text-sm font-bold">3</span>
+                                </div>
+                                <span class="text-gray-700">Extract Metadata</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-indigo-600">
+                        <i class="fas fa-shield-alt mr-2"></i>Privacy & Security
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="text-center p-4 bg-red-50 rounded-lg">
+                            <i class="fas fa-user-secret text-red-500 text-2xl mb-2"></i>
+                            <h4 class="font-semibold text-red-700">PII Redaction</h4>
+                            <p class="text-sm text-red-600">Automatic removal of sensitive information</p>
+                        </div>
+                        <div class="text-center p-4 bg-blue-50 rounded-lg">
+                            <i class="fas fa-lock text-blue-500 text-2xl mb-2"></i>
+                            <h4 class="font-semibold text-blue-700">Secure Storage</h4>
+                            <p class="text-sm text-blue-600">Encrypted data storage and processing</p>
+                        </div>
+                        <div class="text-center p-4 bg-green-50 rounded-lg">
+                            <i class="fas fa-check-circle text-green-500 text-2xl mb-2"></i>
+                            <h4 class="font-semibold text-green-700">Compliance</h4>
+                            <p class="text-sm text-green-600">GDPR and privacy regulation compliant</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Demo -->
+        <div id="search-demo" class="demo-section hidden">
+            <div class="fade-in">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">🔍 Semantic Search & Q&A</h2>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-indigo-600">
+                        <i class="fas fa-brain mr-2"></i>AI-Powered Search Capabilities
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Traditional Keyword Search</h4>
+                            <p class="text-gray-600 text-sm mb-3">❌ Limited to exact matches</p>
+                            <p class="text-gray-600 text-sm">❌ Misses relevant candidates</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Our Semantic Search</h4>
+                            <p class="text-gray-600 text-sm mb-3">✅ Understands context and meaning</p>
+                            <p class="text-gray-600 text-sm">✅ Finds relevant candidates automatically</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white rounded-lg shadow-md p-6 demo-card">
+                        <h3 class="text-xl font-semibold mb-4 text-indigo-600">
+                            <i class="fas fa-question-circle mr-2"></i>Natural Language Queries
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-sm text-gray-600 mb-1">Example Query:</p>
+                                <p class="font-medium">"Who has experience with React and Node.js?"</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-sm text-gray-600 mb-1">Example Query:</p>
+                                <p class="font-medium">"Find candidates with 5+ years experience"</p>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <p class="text-sm text-gray-600 mb-1">Example Query:</p>
+                                <p class="font-medium">"Show me developers with machine learning skills"</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-6 demo-card">
+                        <h3 class="text-xl font-semibold mb-4 text-indigo-600">
+                            <i class="fas fa-chart-line mr-2"></i>Intelligent Results
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700">Relevance Score</span>
+                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">95%</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700">Evidence Snippets</span>
+                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">✓</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700">Context Match</span>
+                                <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm">✓</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Matching Demo -->
+        <div id="matching-demo" class="demo-section hidden">
+            <div class="fade-in">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">🎯 Intelligent Job Matching</h2>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-indigo-600">
+                        <i class="fas fa-target mr-2"></i>Evidence-Based Matching
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="text-center p-4 bg-green-50 rounded-lg">
+                            <i class="fas fa-check-circle text-green-500 text-2xl mb-2"></i>
+                            <h4 class="font-semibold text-green-700">Strengths</h4>
+                            <p class="text-sm text-green-600">Matches found with evidence</p>
+                        </div>
+                        <div class="text-center p-4 bg-yellow-50 rounded-lg">
+                            <i class="fas fa-exclamation-triangle text-yellow-500 text-2xl mb-2"></i>
+                            <h4 class="font-semibold text-yellow-700">Missing Requirements</h4>
+                            <p class="text-sm text-yellow-600">Clear gap analysis</p>
+                        </div>
+                        <div class="text-center p-4 bg-blue-50 rounded-lg">
+                            <i class="fas fa-percentage text-blue-500 text-2xl mb-2"></i>
+                            <h4 class="font-semibold text-blue-700">Match Score</h4>
+                            <p class="text-sm text-blue-600">Quantified compatibility</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white rounded-lg shadow-md p-6 demo-card">
+                        <h3 class="text-xl font-semibold mb-4 text-indigo-600">
+                            <i class="fas fa-user-tie mr-2"></i>Sample Job Posting
+                        </h3>
+                        <div class="space-y-3">
+                            <div>
+                                <h4 class="font-medium text-gray-800">Senior React Developer</h4>
+                                <p class="text-sm text-gray-600">TechCorp Inc.</p>
+                            </div>
+                            <div>
+                                <h5 class="font-medium text-gray-700">Requirements:</h5>
+                                <ul class="text-sm text-gray-600 list-disc list-inside">
+                                    <li>5+ years React experience</li>
+                                    <li>Node.js backend knowledge</li>
+                                    <li>TypeScript proficiency</li>
+                                    <li>Team leadership experience</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-6 demo-card">
+                        <h3 class="text-xl font-semibold mb-4 text-indigo-600">
+                            <i class="fas fa-chart-bar mr-2"></i>Match Results
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="bg-green-50 p-3 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">John Smith</span>
+                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">92%</span>
+                                </div>
+                                <p class="text-xs text-gray-600 mt-1">✓ All requirements met</p>
+                            </div>
+                            <div class="bg-yellow-50 p-3 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Sarah Johnson</span>
+                                    <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm">78%</span>
+                                </div>
+                                <p class="text-xs text-gray-600 mt-1">⚠ Missing leadership experience</p>
+                            </div>
+                            <div class="bg-red-50 p-3 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Mike Davis</span>
+                                    <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">45%</span>
+                                </div>
+                                <p class="text-xs text-gray-600 mt-1">✗ Insufficient React experience</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Stack -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h3 class="text-2xl font-semibold mb-6 text-center text-indigo-600">
+                <i class="fas fa-code mr-2"></i>Technical Stack
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div class="text-center p-3 bg-gray-50 rounded-lg">
+                    <i class="fab fa-node-js text-2xl text-green-600 mb-2"></i>
+                    <p class="text-sm font-medium">Node.js</p>
+                </div>
+                <div class="text-center p-3 bg-gray-50 rounded-lg">
+                    <i class="fas fa-database text-2xl text-green-600 mb-2"></i>
+                    <p class="text-sm font-medium">MongoDB</p>
+                </div>
+                <div class="text-center p-3 bg-gray-50 rounded-lg">
+                    <i class="fas fa-brain text-2xl text-purple-600 mb-2"></i>
+                    <p class="text-sm font-medium">Transformers</p>
+                </div>
+                <div class="text-center p-3 bg-gray-50 rounded-lg">
+                    <i class="fab fa-js text-2xl text-yellow-600 mb-2"></i>
+                    <p class="text-sm font-medium">JavaScript</p>
+                </div>
+                <div class="text-center p-3 bg-gray-50 rounded-lg">
+                    <i class="fas fa-vector-square text-2xl text-blue-600 mb-2"></i>
+                    <p class="text-sm font-medium">Embeddings</p>
+                </div>
+                <div class="text-center p-3 bg-gray-50 rounded-lg">
+                    <i class="fas fa-search text-2xl text-indigo-600 mb-2"></i>
+                    <p class="text-sm font-medium">Semantic Search</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow-md p-6 text-white">
+            <h3 class="text-2xl font-semibold mb-6 text-center">
+                <i class="fas fa-star mr-2"></i>Key Features
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="text-center">
+                    <i class="fas fa-upload text-3xl mb-2"></i>
+                    <h4 class="font-semibold">Bulk Upload</h4>
+                    <p class="text-sm opacity-90">Process multiple resumes</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-search text-3xl mb-2"></i>
+                    <h4 class="font-semibold">Semantic Search</h4>
+                    <p class="text-sm opacity-90">AI-powered candidate search</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-shield-alt text-3xl mb-2"></i>
+                    <h4 class="font-semibold">PII Protection</h4>
+                    <p class="text-sm opacity-90">Privacy-first approach</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-chart-line text-3xl mb-2"></i>
+                    <h4 class="font-semibold">Smart Matching</h4>
+                    <p class="text-sm opacity-90">Evidence-based results</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="gradient-bg py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-xl font-bold text-white mb-4">ResumeRAG - AI-Powered Recruitment</h3>
+            <p class="text-gray-200 mb-4">Revolutionizing how companies find and match the right talent</p>
+            <div class="flex justify-center space-x-6">
+                <span class="tech-badge px-3 py-1 rounded-full text-sm">🧠 AI-Powered</span>
+                <span class="tech-badge px-3 py-1 rounded-full text-sm">🔍 Semantic Search</span>
+                <span class="tech-badge px-3 py-1 rounded-full text-sm">🎯 Smart Matching</span>
+                <span class="tech-badge px-3 py-1 rounded-full text-sm">🛡️ Privacy-First</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function showDemo(demoType) {
+            // Hide all demo sections
+            document.querySelectorAll('.demo-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected demo section
+            document.getElementById(demoType + '-demo').classList.remove('hidden');
+            
+            // Scroll to top of demo section
+            document.getElementById(demoType + '-demo').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // Auto-rotate demos for presentation
+        let currentDemo = 0;
+        const demos = ['upload', 'search', 'matching'];
+        
+        function autoRotate() {
+            showDemo(demos[currentDemo]);
+            currentDemo = (currentDemo + 1) % demos.length;
+        }
+
+        // Uncomment the line below to enable auto-rotation
+        // setInterval(autoRotate, 10000); // Rotate every 10 seconds
+    </script>
+</body>
+</html>

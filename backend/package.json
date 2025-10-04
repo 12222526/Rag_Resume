@@ -1,0 +1,31 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mongoose": "^8.19.0",
+    "multer": "^2.0.2",
+    "openai": "^6.1.0",
+    "pdf-parse": "^1.1.1",
+    "yauzl": "^3.0.0",
+    "uuid": "^10.0.0",
+    "compromise": "^14.10.0",
+    "@xenova/transformers": "^2.17.2",
+    "compute-cosine-similarity": "^1.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

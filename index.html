@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeRAG - Resume Search & Job Match</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-file-alt text-white text-2xl mr-2"></i>
+                        <h1 class="text-white text-xl font-bold">ResumeRAG</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="showPage('upload')" class="nav-btn text-white hover:text-gray-200 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        <i class="fas fa-upload mr-1"></i> Upload
+                    </button>
+                    <button onclick="showPage('search')" class="nav-btn text-white hover:text-gray-200 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        <i class="fas fa-search mr-1"></i> Search
+                    </button>
+                    <button onclick="showPage('jobs')" class="nav-btn text-white hover:text-gray-200 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        <i class="fas fa-briefcase mr-1"></i> Jobs
+                    </button>
+                    <button onclick="showPage('eligibility')" class="nav-btn text-white hover:text-gray-200 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        <i class="fas fa-check-circle mr-1"></i> Eligibility Check
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <!-- Upload Page -->
+        <div id="upload-page" class="page">
+            <div class="fade-in">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Upload Resumes</h2>
+                    <p class="text-gray-600">Upload multiple resumes or a ZIP file containing resumes for processing</p>
+                </div>
+
+                <!-- Upload Form -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <form id="upload-form" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Select Resume Files
+                            </label>
+                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
+                                <div class="space-y-1 text-center">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                    <div class="flex text-sm text-gray-600">
+                                        <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                            <span>Upload files</span>
+                                            <input id="file-upload" name="files" type="file" multiple accept=".pdf,.txt,.doc,.docx" class="sr-only">
+                                        </label>
+                                        <p class="pl-1">or drag and drop</p>
+                                    </div>
+                                    <p class="text-xs text-gray-500">PDF, TXT, DOC, DOCX files up to 10MB each</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <p class="text-gray-500 mb-4">or</p>
+                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
+                                <div class="space-y-1 text-center">
+                                    <i class="fas fa-file-archive text-4xl text-gray-400 mb-4"></i>
+                                    <div class="flex text-sm text-gray-600">
+                                        <label for="zip-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                            <span>Upload ZIP file</span>
+                                            <input id="zip-upload" name="zipfile" type="file" accept=".zip" class="sr-only">
+                                        </label>
+                                        <p class="pl-1">containing multiple resumes</p>
+                                    </div>
+                                    <p class="text-xs text-gray-500">ZIP files up to 50MB</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center">
+                            <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition-colors flex items-center">
+                                <i class="fas fa-upload mr-2"></i>
+                                Upload Resumes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Upload Results -->
+                <div id="upload-results" class="hidden">
+                    <div class="bg-green-50 border border-green-200 rounded-md p-4 mb-4">
+                        <div class="flex">
+                            <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                            <div>
+                                <h3 class="text-sm font-medium text-green-800">Upload Successful</h3>
+                                <div class="mt-2 text-sm text-green-700" id="upload-message"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Uploads -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Recent Uploads</h3>
+                    <div id="recent-uploads" class="space-y-3">
+                        <!-- Recent uploads will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Page -->
+        <div id="search-page" class="page hidden">
+            <div class="fade-in">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Search & Ask Questions</h2>
+                    <p class="text-gray-600">Search through resumes or ask questions about candidates</p>
+                </div>
+
+                <!-- Search Form -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <div class="flex space-x-4">
+                        <div class="flex-1">
+                            <input type="text" id="search-query" placeholder="Search resumes..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <button onclick="searchResumes()" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-search mr-2"></i>Search
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ask Question Form -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Ask a Question</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <textarea id="question-input" rows="3" placeholder="Ask a question about candidates, e.g., 'Who has experience with React and Node.js?'" 
+                                      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <select id="top-k" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="5">Top 5 results</option>
+                                <option value="10">Top 10 results</option>
+                                <option value="20">Top 20 results</option>
+                            </select>
+                            <button onclick="askQuestion()" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors">
+                                <i class="fas fa-question-circle mr-2"></i>Ask
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Results -->
+                <div id="search-results" class="hidden">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Search Results</h3>
+                    <div id="search-results-content" class="space-y-4">
+                        <!-- Search results will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Question Results -->
+                <div id="question-results" class="hidden">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Question Results</h3>
+                    <div id="question-results-content" class="space-y-6">
+                        <!-- Question results will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Eligibility Check Page -->
+        <div id="eligibility-page" class="page hidden">
+            <div class="fade-in">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Eligibility Criteria Checker</h2>
+                    <p class="text-gray-600">Upload your resume to check eligibility against job requirements</p>
+                </div>
+
+                <!-- Upload Resume for Eligibility Check -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Upload Resume for Eligibility Check</h3>
+                    <form id="eligibility-upload-form" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Select Resume File
+                            </label>
+                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
+                                <div class="space-y-1 text-center">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                    <div class="flex text-sm text-gray-600">
+                                        <label for="eligibility-file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                            <span>Upload resume</span>
+                                            <input id="eligibility-file-upload" name="file" type="file" accept=".pdf,.txt,.doc,.docx" class="sr-only">
+                                        </label>
+                                        <p class="pl-1">or drag and drop</p>
+                                    </div>
+                                    <p class="text-xs text-gray-500">PDF, TXT, DOC, DOCX files up to 10MB</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center">
+                            <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition-colors flex items-center">
+                                <i class="fas fa-upload mr-2"></i>
+                                Upload & Check Eligibility
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Eligibility Criteria Input -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Set Eligibility Criteria</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Required Skills (comma-separated)</label>
+                            <input type="text" id="required-skills" placeholder="JavaScript, React, Node.js, Python" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Minimum Experience (years)</label>
+                            <input type="number" id="min-experience" placeholder="3" min="0" max="20"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Required Education Level</label>
+                            <select id="required-education" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="">Any</option>
+                                <option value="high-school">High School</option>
+                                <option value="associate">Associate Degree</option>
+                                <option value="bachelor">Bachelor's Degree</option>
+                                <option value="master">Master's Degree</option>
+                                <option value="phd">PhD</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Required Certifications</label>
+                            <input type="text" id="required-certifications" placeholder="AWS, PMP, Scrum Master" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Additional Requirements</label>
+                        <textarea id="additional-requirements" rows="3" placeholder="Any specific requirements, preferences, or criteria..." 
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                    </div>
+                </div>
+
+                <!-- Eligibility Results -->
+                <div id="eligibility-results" class="hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Eligibility Check Results</h3>
+                        <div id="eligibility-results-content">
+                            <!-- Results will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Eligibility Templates -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Quick Templates</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <button onclick="applyTemplate('web-developer')" class="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors text-left">
+                            <h4 class="font-medium text-gray-900">Web Developer</h4>
+                            <p class="text-sm text-gray-600">JavaScript, React, Node.js, HTML, CSS</p>
+                            <p class="text-xs text-gray-500 mt-1">3+ years experience</p>
+                        </button>
+                        <button onclick="applyTemplate('data-scientist')" class="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors text-left">
+                            <h4 class="font-medium text-gray-900">Data Scientist</h4>
+                            <p class="text-sm text-gray-600">Python, Machine Learning, SQL, Statistics</p>
+                            <p class="text-xs text-gray-500 mt-1">5+ years experience</p>
+                        </button>
+                        <button onclick="applyTemplate('devops-engineer')" class="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors text-left">
+                            <h4 class="font-medium text-gray-900">DevOps Engineer</h4>
+                            <p class="text-sm text-gray-600">AWS, Docker, Kubernetes, CI/CD</p>
+                            <p class="text-xs text-gray-500 mt-1">4+ years experience</p>
+                        </button>
+                        <button onclick="applyTemplate('product-manager')" class="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors text-left">
+                            <h4 class="font-medium text-gray-900">Product Manager</h4>
+                            <p class="text-sm text-gray-600">Agile, Scrum, Product Strategy</p>
+                            <p class="text-xs text-gray-500 mt-1">5+ years experience</p>
+                        </button>
+                        <button onclick="applyTemplate('ui-ux-designer')" class="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors text-left">
+                            <h4 class="font-medium text-gray-900">UI/UX Designer</h4>
+                            <p class="text-sm text-gray-600">Figma, Adobe Creative Suite, User Research</p>
+                            <p class="text-xs text-gray-500 mt-1">3+ years experience</p>
+                        </button>
+                        <button onclick="applyTemplate('mobile-developer')" class="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors text-left">
+                            <h4 class="font-medium text-gray-900">Mobile Developer</h4>
+                            <p class="text-sm text-gray-600">React Native, Swift, Kotlin, Flutter</p>
+                            <p class="text-xs text-gray-500 mt-1">4+ years experience</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jobs Page -->
+        <div id="jobs-page" class="page hidden">
+            <div class="fade-in">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Job Management</h2>
+                    <p class="text-gray-600">Create and manage job postings, then match them with candidates</p>
+                </div>
+
+                <!-- Create Job Form -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Create New Job</h3>
+                    <form id="job-form" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+                                <input type="text" name="title" required 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                                <input type="text" name="company" required 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea name="description" rows="3" required 
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Requirements</label>
+                            <textarea name="requirements" rows="3" required 
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                <input type="text" name="location" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Experience</label>
+                                <input type="text" name="experience" placeholder="e.g., 3+ years" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Employment Type</label>
+                                <select name="employmentType" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="full-time">Full-time</option>
+                                    <option value="part-time">Part-time</option>
+                                    <option value="contract">Contract</option>
+                                    <option value="internship">Internship</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Skills (comma-separated)</label>
+                            <input type="text" name="skills" placeholder="JavaScript, React, Node.js" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition-colors">
+                                <i class="fas fa-plus mr-2"></i>Create Job
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Jobs List -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Active Jobs</h3>
+                    <div id="jobs-list" class="space-y-4">
+                        <!-- Jobs will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
+            <div class="loading"></div>
+            <span class="text-gray-700">Processing...</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

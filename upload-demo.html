@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Upload Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .upload-area {
+            border: 3px dashed #007bff;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .upload-area:hover {
+            border-color: #0056b3;
+            background-color: #e3f2fd;
+        }
+        .upload-button {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+        .upload-button:hover {
+            background-color: #0056b3;
+        }
+        .file-info {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+        .success {
+            color: #155724;
+            font-weight: bold;
+        }
+        .icon {
+            font-size: 48px;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #333;">📁 Resume Upload Demo</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            Upload your resume file to check eligibility against job requirements
+        </p>
+
+        <div class="upload-area" onclick="document.getElementById('file-input').click()">
+            <div class="icon">📤</div>
+            <h2>Click Here to Upload Resume</h2>
+            <p>or drag and drop your file here</p>
+            <button class="upload-button" onclick="event.stopPropagation(); document.getElementById('file-input').click()">
+                📁 Choose Resume File
+            </button>
+            <p style="color: #666; font-size: 14px; margin-top: 15px;">
+                Supported formats: PDF, DOC, DOCX, TXT (max 10MB)
+            </p>
+        </div>
+
+        <input type="file" id="file-input" accept=".pdf,.txt,.doc,.docx" style="display: none;">
+
+        <div id="file-info" class="file-info">
+            <h3 class="success">✅ File Uploaded Successfully!</h3>
+            <p><strong>File Name:</strong> <span id="file-name"></span></p>
+            <p><strong>File Size:</strong> <span id="file-size"></span></p>
+            <p><strong>File Type:</strong> <span id="file-type"></span></p>
+            <button onclick="removeFile()" style="background-color: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 3px; cursor: pointer;">
+                Remove File
+            </button>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background-color: #e7f3ff; border-radius: 5px;">
+            <h3>Instructions:</h3>
+            <ul>
+                <li>Click the upload area above or the "Choose Resume File" button</li>
+                <li>Select your resume file from your computer</li>
+                <li>Supported formats: PDF, DOC, DOCX, TXT</li>
+                <li>Maximum file size: 10MB</li>
+                <li>Once uploaded, you'll see the file details above</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const fileInfo = document.getElementById('file-info');
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Check file type
+                const allowedTypes = ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Please select a valid file type (PDF, TXT, DOC, DOCX)');
+                    return;
+                }
+
+                // Check file size (10MB limit)
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File size must be less than 10MB');
+                    return;
+                }
+
+                // Display file info
+                document.getElementById('file-name').textContent = file.name;
+                document.getElementById('file-size').textContent = formatFileSize(file.size);
+                document.getElementById('file-type').textContent = getFileTypeDescription(file.type);
+                fileInfo.style.display = 'block';
+            }
+        });
+
+        function removeFile() {
+            fileInput.value = '';
+            fileInfo.style.display = 'none';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function getFileTypeDescription(mimeType) {
+            const types = {
+                'application/pdf': 'PDF Document',
+                'text/plain': 'Text File',
+                'application/msword': 'Microsoft Word Document',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'Microsoft Word Document (DOCX)'
+            };
+            return types[mimeType] || 'Unknown File Type';
+        }
+
+        // Drag and drop functionality
+        const uploadArea = document.querySelector('.upload-area');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#0056b3';
+            uploadArea.style.backgroundColor = '#e3f2fd';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#007bff';
+            uploadArea.style.backgroundColor = '#f8f9fa';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#007bff';
+            uploadArea.style.backgroundColor = '#f8f9fa';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                const event = new Event('change', { bubbles: true });
+                fileInput.dispatchEvent(event);
+            }
+        });
+    </script>
+</body>
+</html>
